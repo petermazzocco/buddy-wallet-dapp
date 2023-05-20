@@ -1,6 +1,5 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import Head from "next/head";
 import { getAccount } from "@tokenbound/sdk";
 import { useState, useEffect } from "react";
 import { createPublicClient, http, createWalletClient, custom } from "viem";
@@ -112,15 +111,6 @@ export default function Main() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <Head>
-        <title>BUDDY WALLET</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta
-          content="Buddy Wallet - View & Transact With Your NFT's Buddy Wallet Using ERC6551"
-          name="description"
-        />
-        <link href="/favicon.ico" rel="shortcut icon" />
-      </Head>
       <div className="navbar px-6">
         <div className="flex-1">
           <img src="./logo.png" className="w-16" alt="logo" />
