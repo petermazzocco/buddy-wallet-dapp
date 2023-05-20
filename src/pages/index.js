@@ -104,10 +104,10 @@ export default function Main() {
     document.body.classList.remove("overflow-hidden");
   };
 
-  const copyAddress = () => {
-    navigator.clipboard.writeText(tba);
-    setCopied(true);
-  };
+  // const copyAddress = () => {
+  //   navigator.clipboard.writeText(tba);
+  //   setCopied(true);
+  // };
 
   return (
     <div className="min-h-screen bg-white text-black">

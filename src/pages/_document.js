@@ -5,7 +5,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <title>BUDDY WALLET</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
           content="Buddy Wallet - View & Transact With Your NFT's Buddy Wallet Using ERC6551"
           name="description"
