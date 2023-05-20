@@ -12,7 +12,7 @@ export default function Main() {
   const [modal, setModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [selectedNft, setSelectedNft] = useState(null);
-  const [tba, setTba] = useState("");
+  const [buddy, setBuddy] = useState("");
   const { address, isConnected } = useAccount();
   const [copied, setCopied] = useState(false);
 
@@ -86,7 +86,7 @@ export default function Main() {
         tokenId,
         providerClient
       );
-      setTba(accountAddress);
+      setBuddy(accountAddress);
     } catch (err) {
       setErrorMsg("An error occured while getting the address");
     }
@@ -104,10 +104,10 @@ export default function Main() {
     document.body.classList.remove("overflow-hidden");
   };
 
-  // const copyAddress = () => {
-  //   navigator.clipboard.writeText(tba);
-  //   setCopied(true);
-  // };
+  const copyAddress = () => {
+    navigator.clipboard.writeText(buddy);
+    setCopied(true);
+  };
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -184,7 +184,7 @@ export default function Main() {
                           </h2>
                           <div className="flex space-x-4 flex-row justify-center mt-4 mb-8">
                             <Link
-                              href={`https://etherscan.io/address/${tba}`}
+                              href={`https://etherscan.io/address/${buddy}`}
                               target="_blank"
                             >
                               <button className="btn btn-primary">
@@ -198,7 +198,7 @@ export default function Main() {
                             ) : (
                               <div
                                 className="tooltip tooltip-bottom"
-                                data-tip={`${tba.slice(0, 4)}...${tba.slice(
+                                data-tip={`${buddy.slice(0, 4)}...${buddy.slice(
                                   -4
                                 )}`}
                               >
