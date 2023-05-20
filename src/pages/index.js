@@ -1,118 +1,280 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import Head from "next/head";
+import { getAccount } from "@tokenbound/sdk";
+import { useState, useEffect } from "react";
+import { createPublicClient, http, createWalletClient, custom } from "viem";
+import { goerli, mainnet } from "viem/chains";
+import Link from "next/link";
+import { Alchemy, Network } from "alchemy-sdk";
 
-const inter = Inter({ subsets: ['latin'] })
+export default function Main() {
+  const [nfts, setNfts] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [selectedNft, setSelectedNft] = useState(null);
+  const [tba, setTba] = useState("");
+  const { address, isConnected } = useAccount();
+  const [copied, setCopied] = useState(false);
 
-export default function Home() {
+  /**
+   * Create the client for the public and wallet provider for Tokenbound SDK
+   * @returns walletClient
+   * @returns providerClient
+   */
+
+  const providerClient = createPublicClient({
+    chain: goerli || mainnet,
+    transport: custom(window.ethereum),
+  });
+
+  /**
+   * Alchemy SDK configuration
+   * @returns alchemy client
+   */
+  const ALCHEMY_API = process.env.NEXT_PUBLIC_ALCHEMY_API;
+  const config = {
+    apiKey: ALCHEMY_API,
+    network: Network.ETH_MAINNET,
+  };
+
+  const alchemy = new Alchemy(config);
+  /**
+   * Get the NFT data for the connected address
+   * @returns nfts
+   */
+  useEffect(() => {
+    const main = async () => {
+      let owner = address;
+      async function getNftsForOwner() {
+        if (isConnected) {
+          try {
+            let nfts = [];
+            const nftsIterable = alchemy.nft.getNftsForOwnerIterator(owner);
+
+            for await (const nft of nftsIterable) {
+              nfts.push(nft);
+            }
+            setNfts(nfts);
+            // console.log(nfts.map((nft: any) => nft.media[0]?.gateway));
+          } catch (err) {
+            setErrorMsg("An error occurred while fetching");
+            console.log(err?.message);
+          }
+        }
+      }
+      getNftsForOwner();
+    };
+    main();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
+  /**
+   * Get the NFT data for the connected address
+   * @returns nfts
+   */
+
+  /**
+   * Function to get the ERC6551 address from the ERC721 address
+   * @param contractAdd
+   * @param tokenId
+   */
+
+  const handleAddress = async (contractAdd, tokenId) => {
+    try {
+      const accountAddress = await getAccount(
+        contractAdd,
+        tokenId,
+        providerClient
+      );
+      setTba(accountAddress);
+    } catch (err) {
+      setErrorMsg("An error occured while getting the address");
+    }
+  };
+
+  /**
+   * Logic to open modal
+   */
+  const openModal = () => {
+    setModal(!modal);
+    document.body.classList.add("overflow-hidden");
+  };
+  const closeModal = () => {
+    setModal(false);
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  const copyAddress = () => {
+    navigator.clipboard.writeText(tba);
+    setCopied(true);
+  };
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
+    <div className="min-h-screen bg-white text-black">
+      <Head>
+        <title>BUDDY WALLET</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta
+          content="Buddy Wallet - View & Transact With Your NFT's Buddy Wallet Using ERC6551"
+          name="description"
+        />
+        <link href="/favicon.ico" rel="shortcut icon" />
+      </Head>
+      <div className="navbar px-6">
+        <div className="flex-1">
+          <img src="./logo.png" className="w-16" alt="logo" />
+        </div>
+        <div className="flex">{isConnected && <ConnectButton />}</div>
+      </div>
+      <main className="hero min-h-screen mb-10">
+        <div className="hero-content text-center">
+          <div className="max-w-full mx-10">
+            <img src="./logo.png" className="w-32 mx-auto" alt="logo" />
+            <h1 className="text-6xl font-bold">Buddy Wallet</h1>
+            <h2 className="pb-4 font-normal text-lg">
+              View Your NFT&apos;s Buddy Wallet Using ERC6551
+            </h2>
+            {!isConnected && (
+              <div className="grid justify-center space-y-2 mb-10">
+                <ConnectButton />
+              </div>
+            )}
+            <div className="grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-4">
+              {nfts
+                ?.filter((nft) => nft.title !== "")
+                .map((nft, index) => (
+                  <div
+                    className="card bg-gray-200 rounded-md p-3 space-y-1"
+                    key={index}
+                  >
+                    <h2 className="label truncate text-ellipsis">
+                      {nft.title}
+                    </h2>
+                    <img
+                      src={nft.media[0]?.gateway}
+                      className="w-full rounded-lg object-fill"
+                      alt={nft.title}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedNft(index);
+                        openModal();
+                        handleAddress(nft.contract.address, nft.tokenId);
+                      }}
+                      className="btn btn-primary"
+                    >
+                      View Buddy Wallet
+                    </button>
+                    {modal && selectedNft === index && (
+                      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+                        <div className="bg-white xs:w-full xs:mx-10 p-10 rounded-box">
+                          <div className="flex flex-row justify-between">
+                            <div className="tooltip flex" data-tip="Close">
+                              <button
+                                onClick={() => {
+                                  closeModal();
+                                }}
+                                className="btn btn-circle btn-outline"
+                              >
+                                x
+                              </button>
+                            </div>
+                            <div className="flex">
+                              <img
+                                src="./logo.png"
+                                className="w-16"
+                                alt="Buddy Logo"
+                              />
+                            </div>
+                          </div>
+                          <h2 className="text-center text-3xl text-black mt-6">
+                            {nft.title}&apos;s Buddy Wallet
+                          </h2>
+                          <div className="flex space-x-4 flex-row justify-center mt-4 mb-8">
+                            <Link
+                              href={`https://etherscan.io/address/${tba}`}
+                              target="_blank"
+                            >
+                              <button className="btn btn-primary">
+                                View On Etherscan
+                              </button>
+                            </Link>
+                            {copied ? (
+                              <button className="btn btn-success">
+                                Copied
+                              </button>
+                            ) : (
+                              <div
+                                className="tooltip tooltip-bottom"
+                                data-tip={`${tba.slice(0, 4)}...${tba.slice(
+                                  -4
+                                )}`}
+                              >
+                                <button
+                                  className="btn btn-primary"
+                                  onClick={() => copyAddress()}
+                                >
+                                  Copy Address
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          <div className="grid justify-center space-y-4  p-10">
+                            <div className="grid">
+                              <h3 className="text-lg font-normal text-black">
+                                Transaction support coming soon!
+                              </h3>
+                              <img
+                                src={nft.media[0]?.gateway}
+                                className="rounded-md w-72"
+                                alt={nft.title}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+            <div className="grid justify-center my-5">
+              <h2 className="text-2xl">Not Familiar with ERC6551?</h2>
+              <div className="flex flex-row justify-center space-x-2">
+                <Link href="https://eips.ethereum.org/EIPS/eip-6551">
+                  <button className="btn btn-primary">EIP</button>
+                </Link>
+                <Link href="https://docs.tokenbound.org">
+                  <button className="btn btn-primary">Docs</button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      {errorMsg && (
+        <div className="toast toast-end">
+          <div className="alert alert-error">
+            <div>
+              <span>{errorMsg}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <footer className="footer flex flex-row justify-between p-4  ">
+        <div>
+          <img src="./logo.png" className="w-16" alt="Buddy Logo" />
           <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
+            href="https://tokenbound.org"
             rel="noopener noreferrer"
+            target="_blank"
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
+            Powered by Tokenbound
           </a>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      </footer>
+    </div>
+  );
 }
