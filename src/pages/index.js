@@ -131,103 +131,105 @@ export default function Main() {
               </div>
             )}
             <div className="grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-4">
-              {nfts
-                ?.filter((nft) => nft.title !== "")
-                .map((nft, index) => (
-                  <div
-                    className="card bg-gray-200 rounded-md p-3 space-y-1"
-                    key={index}
-                  >
-                    <h2 className="label truncate text-ellipsis">
-                      {nft.title}
-                    </h2>
-                    <img
-                      src={nft.media[0]?.gateway}
-                      className="w-full rounded-lg object-fill"
-                      alt={nft.title}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedNft(index);
-                        openModal();
-                        handleAddress(nft.contract.address, nft.tokenId);
-                      }}
-                      className="btn btn-primary"
+              {isConnected &&
+                nfts
+                  ?.filter((nft) => nft.title !== "")
+                  .map((nft, index) => (
+                    <div
+                      className="card bg-gray-200 rounded-md p-3 space-y-1"
+                      key={index}
                     >
-                      View Buddy Wallet
-                    </button>
-                    {modal && selectedNft === index && (
-                      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-                        <div className="bg-white xs:w-full xs:mx-10 p-10 rounded-box">
-                          <div className="flex flex-row justify-between">
-                            <div className="tooltip flex" data-tip="Close">
-                              <button
-                                onClick={() => {
-                                  closeModal();
-                                }}
-                                className="btn btn-circle btn-outline"
-                              >
-                                x
-                              </button>
-                            </div>
-                            <div className="flex">
-                              <img
-                                src="./logo.png"
-                                className="w-16"
-                                alt="Buddy Logo"
-                              />
-                            </div>
-                          </div>
-                          <h2 className="text-center text-3xl text-black mt-6">
-                            {nft.title}&apos;s Buddy Wallet
-                          </h2>
-                          <div className="flex space-x-4 flex-row justify-center mt-4 mb-8">
-                            <Link
-                              href={`https://etherscan.io/address/${buddy}`}
-                              target="_blank"
-                            >
-                              <button className="btn btn-primary">
-                                View On Etherscan
-                              </button>
-                            </Link>
-                            {copied ? (
-                              <button className="btn btn-success">
-                                Copied
-                              </button>
-                            ) : (
-                              <div
-                                className="tooltip tooltip-bottom"
-                                data-tip={`${buddy.slice(0, 4)}...${buddy.slice(
-                                  -4
-                                )}`}
-                              >
+                      <h2 className="label truncate text-ellipsis">
+                        {nft.title}
+                      </h2>
+                      <img
+                        src={nft.media[0]?.gateway}
+                        className="w-full rounded-lg object-fill"
+                        alt={nft.title}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedNft(index);
+                          openModal();
+                          handleAddress(nft.contract.address, nft.tokenId);
+                        }}
+                        className="btn btn-primary"
+                      >
+                        View Buddy Wallet
+                      </button>
+                      {modal && selectedNft === index && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+                          <div className="bg-white xs:w-full xs:mx-10 p-10 rounded-box">
+                            <div className="flex flex-row justify-between">
+                              <div className="tooltip flex" data-tip="Close">
                                 <button
-                                  className="btn btn-primary"
-                                  onClick={() => copyAddress()}
+                                  onClick={() => {
+                                    closeModal();
+                                  }}
+                                  className="btn btn-circle btn-outline"
                                 >
-                                  Copy Address
+                                  x
                                 </button>
                               </div>
-                            )}
-                          </div>
-                          <div className="grid justify-center space-y-4  p-10">
-                            <div className="grid">
-                              <h3 className="text-lg font-normal text-black">
-                                Transaction support coming soon!
-                              </h3>
-                              <img
-                                src={nft.media[0]?.gateway}
-                                className="rounded-md w-72"
-                                alt={nft.title}
-                              />
+                              <div className="flex">
+                                <img
+                                  src="./logo.png"
+                                  className="w-16"
+                                  alt="Buddy Logo"
+                                />
+                              </div>
+                            </div>
+                            <h2 className="text-center text-3xl text-black mt-6">
+                              {nft.title}&apos;s Buddy Wallet
+                            </h2>
+                            <div className="flex space-x-4 flex-row justify-center mt-4 mb-8">
+                              <Link
+                                href={`https://etherscan.io/address/${buddy}`}
+                                target="_blank"
+                              >
+                                <button className="btn btn-primary">
+                                  View On Etherscan
+                                </button>
+                              </Link>
+                              {copied ? (
+                                <button className="btn btn-success">
+                                  Copied
+                                </button>
+                              ) : (
+                                <div
+                                  className="tooltip tooltip-bottom"
+                                  data-tip={`${buddy.slice(
+                                    0,
+                                    4
+                                  )}...${buddy.slice(-4)}`}
+                                >
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={() => copyAddress()}
+                                  >
+                                    Copy Address
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                            <div className="grid justify-center space-y-4  p-10">
+                              <div className="grid">
+                                <h3 className="text-lg font-normal text-black">
+                                  Transaction support coming soon!
+                                </h3>
+                                <img
+                                  src={nft.media[0]?.gateway}
+                                  className="rounded-md w-72"
+                                  alt={nft.title}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      )}
+                    </div>
+                  ))}
             </div>
             <div className="grid justify-center my-5">
               <h2 className="text-2xl">Not Familiar with ERC6551?</h2>
