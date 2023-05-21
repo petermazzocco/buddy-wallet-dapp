@@ -42,31 +42,30 @@ export default function Main() {
    * Get the NFT data for the connected address
    * @returns nfts
    */
-  useEffect(() => {
-    const main = async () => {
-      let owner = address;
-      async function getNftsForOwner() {
-        if (isConnected) {
-          try {
-            let nfts = [];
-            const nftsIterable = alchemy.nft.getNftsForOwnerIterator(owner);
+  // useEffect(() => {
+  //   const main = async () => {
+  //     let owner = address;
+  //     async function getNftsForOwner() {
+  //       if (isConnected) {
+  //         try {
+  //           let nfts = [];
+  //           const nftsIterable = alchemy.nft.getNftsForOwnerIterator(owner);
 
-            for await (const nft of nftsIterable) {
-              nfts.push(nft);
-            }
-            setNfts(nfts);
-            // console.log(nfts.map((nft: any) => nft.media[0]?.gateway));
-          } catch (err) {
-            setErrorMsg("An error occurred while fetching");
-            console.log(err?.message);
-          }
-        }
-      }
-      getNftsForOwner();
-    };
-    main();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  //           for await (const nft of nftsIterable) {
+  //             nfts.push(nft);
+  //           }
+  //           setNfts(nfts);
+  //         } catch (err) {
+  //           setErrorMsg("An error occurred while fetching");
+  //           console.log(err?.message);
+  //         }
+  //       }
+  //     }
+  //     getNftsForOwner();
+  //   };
+  //   main();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [address]);
 
   /**
    * Get the NFT data for the connected address
@@ -131,7 +130,7 @@ export default function Main() {
               </div>
             )}
             <div className="grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-4">
-              {nfts
+              {/* {nfts
                 ?.filter((nft) => nft.title !== "")
                 .map((nft, index) => (
                   <div
@@ -227,7 +226,7 @@ export default function Main() {
                       </div>
                     )}
                   </div>
-                ))}
+                ))} */}
             </div>
             <div className="grid justify-center my-5">
               <h2 className="text-2xl">Not Familiar with ERC6551?</h2>
