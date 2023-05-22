@@ -108,7 +108,7 @@ export default function Main() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* <div className="navbar px-6">
+      <div className="navbar px-6">
         <div className="flex-1">
           <img src="./logo.png" className="w-16" alt="logo" />
         </div>
@@ -263,7 +263,7 @@ export default function Main() {
             Powered by Tokenbound
           </a>
         </div>
-      </footer> */}
+      </footer>
     </div>
   );
 }

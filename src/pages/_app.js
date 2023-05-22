@@ -10,6 +10,7 @@ import { mainnet } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { useState, useEffect } from "react";
+import { browserName, CustomView } from "react-device-detect";
 
 const APIKEY = process.env.NEXT_PUBLIC_ALCHEMY_API;
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -43,17 +44,19 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       {ready && (
-        // <WagmiConfig config={config}>
-        //   <RainbowKitProvider
-        //     chains={chains}
-        //     theme={lightTheme({
-        //       accentColor: "#570df8",
-        //       borderRadius: "small",
-        //     })}
-        //   >
-        <Component {...pageProps} />
-        //   </RainbowKitProvider>
-        // </WagmiConfig>
+        <CustomView condition={browserName === "Chrome"}>
+          <WagmiConfig config={config}>
+            <RainbowKitProvider
+              chains={chains}
+              theme={lightTheme({
+                accentColor: "#570df8",
+                borderRadius: "small",
+              })}
+            >
+              <Component {...pageProps} />
+            </RainbowKitProvider>
+          </WagmiConfig>
+        </CustomView>
       )}
     </>
   );
