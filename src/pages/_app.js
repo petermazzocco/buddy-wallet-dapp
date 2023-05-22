@@ -24,7 +24,7 @@ const { connectors } = getDefaultWallets({
   chains,
 });
 
-const wagmiConfig = createConfig({
+const config = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
@@ -43,17 +43,17 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       {ready && (
-        <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider
-            chains={chains}
-            theme={lightTheme({
-              accentColor: "#570df8",
-              borderRadius: "small",
-            })}
-          >
-            <Component {...pageProps} />
-          </RainbowKitProvider>
-        </WagmiConfig>
+        // <WagmiConfig config={config}>
+        //   <RainbowKitProvider
+        //     chains={chains}
+        //     theme={lightTheme({
+        //       accentColor: "#570df8",
+        //       borderRadius: "small",
+        //     })}
+        //   >
+        <Component {...pageProps} />
+        //   </RainbowKitProvider>
+        // </WagmiConfig>
       )}
     </>
   );

@@ -2,7 +2,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import { getAccount } from "@tokenbound/sdk";
 import { useState, useEffect } from "react";
-import { createPublicClient, http, createWalletClient, custom } from "viem";
+import { createPublicClient, custom } from "viem";
 import { goerli, mainnet } from "viem/chains";
 import Link from "next/link";
 import { Alchemy, Network } from "alchemy-sdk";
@@ -101,7 +101,6 @@ export default function Main() {
     setModal(false);
     document.body.classList.remove("overflow-hidden");
   };
-
   const copyAddress = () => {
     navigator.clipboard.writeText(buddy);
     setCopied(true);
@@ -109,7 +108,7 @@ export default function Main() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <div className="navbar px-6">
+      {/* <div className="navbar px-6">
         <div className="flex-1">
           <img src="./logo.png" className="w-16" alt="logo" />
         </div>
@@ -264,7 +263,7 @@ export default function Main() {
             Powered by Tokenbound
           </a>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }
