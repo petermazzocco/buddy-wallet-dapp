@@ -6,6 +6,7 @@ import { createPublicClient, custom } from "viem";
 import { goerli, mainnet } from "viem/chains";
 import Link from "next/link";
 import { Alchemy, Network } from "alchemy-sdk";
+import { isChrome, isMobile } from "react-device-detect";
 
 export default function Main() {
   const [nfts, setNfts] = useState([]);
@@ -15,6 +16,10 @@ export default function Main() {
   const [buddy, setBuddy] = useState("");
   const { address, isConnected } = useAccount();
   const [copied, setCopied] = useState(false);
+
+  if (!isChrome && isMobile) {
+    return null;
+  }
 
   /**
    * Create the client for the public and wallet provider for Tokenbound SDK
