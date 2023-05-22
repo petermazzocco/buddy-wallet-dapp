@@ -42,31 +42,29 @@ export default function Main() {
    * Get the NFT data for the connected address
    * @returns nfts
    */
-  useEffect(() => {
-    const main = async () => {
-      let owner = address;
-      async function getNftsForOwner() {
-        if (isConnected) {
-          try {
-            let nftArray = [];
-            const nftsIterable = alchemy.nft.getNftsForOwnerIterator(owner);
-
-            for await (const nft of nftsIterable) {
-              nftArray.push(nft);
-            }
-            setNfts(nftArray);
-            console.log(typeof nfts);
-          } catch (err) {
-            setErrorMsg("An error occurred while fetching");
-            console.log(err?.message);
-          }
-        }
-      }
-      getNftsForOwner();
-    };
-    main();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  // useEffect(() => {
+  //   const main = async () => {
+  //     let owner = address;
+  //     async function getNftsForOwner() {
+  //       if (isConnected) {
+  //         try {
+  //           let nftArray = [];
+  //           const nftsIterable = alchemy.nft.getNftsForOwnerIterator(owner);
+  //           for await (const nft of nftsIterable) {
+  //             nftArray.push(nft);
+  //           }
+  //           setNfts(nftArray);
+  //         } catch (err) {
+  //           setErrorMsg("An error occurred while fetching");
+  //           console.log(err?.message);
+  //         }
+  //       }
+  //     }
+  //     getNftsForOwner();
+  //   };
+  //   main();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [address]);
 
   /**
    * Get the NFT data for the connected address
@@ -111,7 +109,7 @@ export default function Main() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <div className="navbar px-6">
+      {/* <div className="navbar px-6">
         <div className="flex-1">
           <img src="./logo.png" className="w-16" alt="logo" />
         </div>
@@ -266,7 +264,7 @@ export default function Main() {
             Powered by Tokenbound
           </a>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }
