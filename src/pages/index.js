@@ -9,22 +9,22 @@ import Link from "next/link";
 import { Alchemy, Network } from "alchemy-sdk";
 
 export default function Main() {
-  // const [nfts, setNfts] = useState([]); // NFTs array
-  // const [modal, setModal] = useState(false); // Modal state
-  // const [errorMsg, setErrorMsg] = useState(""); // Error message
-  // const [selectedNft, setSelectedNft] = useState(null); // Selected NFT for modal
-  // const [buddy, setBuddy] = useState(""); // Buddy Wallet address
-  // const { address, isConnected } = useAccount(); // Wagmi account details
-  // const [copied, setCopied] = useState(false); // Copied state for address
+  const [nfts, setNfts] = useState([]); // NFTs array
+  const [modal, setModal] = useState(false); // Modal state
+  const [errorMsg, setErrorMsg] = useState(""); // Error message
+  const [selectedNft, setSelectedNft] = useState(null); // Selected NFT for modal
+  const [buddy, setBuddy] = useState(""); // Buddy Wallet address
+  const { address, isConnected } = useAccount(); // Wagmi account details
+  const [copied, setCopied] = useState(false); // Copied state for address
 
-  // /**
-  //  * Create the provider client for Tokenbound SDK via Viem
-  //  * @returns providerClient
-  //  */
-  // const providerClient = createPublicClient({
-  //   chain: goerli || mainnet,
-  //   transport: custom(window.ethereum),
-  // });
+  /**
+   * Create the provider client for Tokenbound SDK via Viem
+   * @returns providerClient
+   */
+  const providerClient = createPublicClient({
+    chain: goerli || mainnet,
+    transport: custom(window.ethereum),
+  });
 
   // /**
   //  * Alchemy SDK configuration
@@ -64,40 +64,40 @@ export default function Main() {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [address]);
 
-  // /**
-  //  * Get the ERC6551 address (or Buddy Wallet) from all available ERC721 addresses
-  //  * @param contractAdd
-  //  * @param tokenId
-  //  */
+  /**
+   * Get the ERC6551 address (or Buddy Wallet) from all available ERC721 addresses
+   * @param contractAdd
+   * @param tokenId
+   */
 
-  // const handleAddress = async (contractAdd, tokenId) => {
-  //   try {
-  //     const accountAddress = await getAccount(
-  //       contractAdd,
-  //       tokenId,
-  //       providerClient
-  //     );
-  //     setBuddy(accountAddress);
-  //   } catch (err) {
-  //     setErrorMsg("An error occured while getting the address");
-  //   }
-  // };
+  const handleAddress = async (contractAdd, tokenId) => {
+    try {
+      const accountAddress = await getAccount(
+        contractAdd,
+        tokenId,
+        providerClient
+      );
+      setBuddy(accountAddress);
+    } catch (err) {
+      setErrorMsg("An error occured while getting the address");
+    }
+  };
 
-  // /**
-  //  * Logic to for modal component
-  //  */
-  // const openModal = () => {
-  //   setModal(!modal);
-  //   document.body.classList.add("overflow-hidden");
-  // };
-  // const closeModal = () => {
-  //   setModal(false);
-  //   document.body.classList.remove("overflow-hidden");
-  // };
-  // const copyAddress = () => {
-  //   navigator.clipboard.writeText(buddy);
-  //   setCopied(true);
-  // };
+  /**
+   * Logic to for modal component
+   */
+  const openModal = () => {
+    setModal(!modal);
+    document.body.classList.add("overflow-hidden");
+  };
+  const closeModal = () => {
+    setModal(false);
+    document.body.classList.remove("overflow-hidden");
+  };
+  const copyAddress = () => {
+    navigator.clipboard.writeText(buddy);
+    setCopied(true);
+  };
 
   return (
     <div className="min-h-screen bg-white text-black">
