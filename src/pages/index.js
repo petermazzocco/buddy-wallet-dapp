@@ -17,14 +17,14 @@ export default function Main() {
   const { address, isConnected } = useAccount(); // Wagmi account details
   const [copied, setCopied] = useState(false); // Copied state for address
 
-  // /**
-  //  * Create the provider client for Tokenbound SDK via Viem
-  //  * @returns providerClient
-  //  */
-  // const providerClient = createPublicClient({
-  //   chain: goerli || mainnet,
-  //   transport: custom(window.ethereum),
-  // });
+  /**
+   * Create the provider client for Tokenbound SDK via Viem
+   * @returns providerClient
+   */
+  const providerClient = createPublicClient({
+    chain: goerli || mainnet,
+    transport: custom(window.ethereum),
+  });
 
   /**
    * Alchemy SDK configuration
