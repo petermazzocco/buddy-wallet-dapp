@@ -22,7 +22,7 @@ export default function Main() {
    * @returns providerClient
    */
   const providerClient = createPublicClient({
-    chain: goerli || mainnet,
+    chain: mainnet,
     transport: http(),
   });
 
