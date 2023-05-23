@@ -3,8 +3,8 @@ import { useAccount } from "wagmi";
 import { disconnect } from "@wagmi/core";
 import { getAccount } from "@tokenbound/sdk";
 import { useState, useEffect } from "react";
-import { createPublicClient, custom } from "viem";
-import { goerli, mainnet } from "viem/chains";
+import { createPublicClient, custom, http } from "viem";
+import { mainnet } from "viem/chains";
 import Link from "next/link";
 import { Alchemy, Network } from "alchemy-sdk";
 
@@ -16,21 +16,20 @@ export default function Main() {
   const [buddy, setBuddy] = useState(""); // Buddy Wallet address
   const { address, isConnected } = useAccount(); // Wagmi account details
   const [copied, setCopied] = useState(false); // Copied state for address
-
+  const ALCHEMY_API = process.env.NEXT_PUBLIC_ALCHEMY_API;
   /**
    * Create the provider client for Tokenbound SDK via Viem
    * @returns providerClient
    */
   const providerClient = createPublicClient({
     chain: mainnet,
-    transport: http(),
+    transport: http(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API}`),
   });
 
   /**
    * Alchemy SDK configuration
    * @returns alchemy client
    */
-  const ALCHEMY_API = process.env.NEXT_PUBLIC_ALCHEMY_API;
   const config = {
     apiKey: ALCHEMY_API,
     network: Network.ETH_MAINNET,
