@@ -12,7 +12,7 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 import { useState, useEffect } from "react";
 
 const APIKEY = process.env.NEXT_PUBLIC_ALCHEMY_API;
-const { chains, publicClient, webSocketPublicClient } = configureChains(
+const { chains, publicClient } = configureChains(
   [mainnet],
   [alchemyProvider({ apiKey: APIKEY }), publicProvider()]
 );
@@ -28,7 +28,6 @@ const config = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
-  webSocketPublicClient,
 });
 
 export default function App({ Component, pageProps }) {
