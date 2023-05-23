@@ -1,6 +1,5 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { disconnect } from "@wagmi/core";
 import { getAccount } from "@tokenbound/sdk";
 import { useState, useEffect } from "react";
 import { createPublicClient, custom, http } from "viem";
@@ -63,24 +62,24 @@ export default function Main() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
-  // /**
-  //  * Get the ERC6551 address (or Buddy Wallet) from all available ERC721 addresses
-  //  * @param contractAdd
-  //  * @param tokenId
-  //  */
+  /**
+   * Get the ERC6551 address (or Buddy Wallet) from all available ERC721 addresses
+   * @param contractAdd
+   * @param tokenId
+   */
 
-  // const handleAddress = async (contractAdd, tokenId) => {
-  //   try {
-  //     const accountAddress = await getAccount(
-  //       contractAdd,
-  //       tokenId,
-  //       providerClient
-  //     );
-  //     setBuddy(accountAddress);
-  //   } catch (err) {
-  //     setErrorMsg("An error occured while getting the address");
-  //   }
-  // };
+  const handleAddress = async (contractAdd, tokenId) => {
+    try {
+      const accountAddress = await getAccount(
+        contractAdd,
+        tokenId,
+        providerClient
+      );
+      setBuddy(accountAddress);
+    } catch (err) {
+      setErrorMsg("An error occured while getting the address");
+    }
+  };
 
   /**
    * Logic to for modal component
