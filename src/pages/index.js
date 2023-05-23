@@ -23,7 +23,7 @@ export default function Main() {
    */
   const providerClient = createPublicClient({
     chain: goerli || mainnet,
-    transport: custom(window.ethereum),
+    transport: http(),
   });
 
   /**
